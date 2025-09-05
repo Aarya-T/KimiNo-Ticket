@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { useSearchParams } from "next/navigation"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
@@ -10,8 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SeatSelection from "@/components/seat-selection"
 import SnacksSelection from "@/components/snacks-selection"
 import { notFound } from "next/navigation"
+import { useAuth } from "@/lib/auth"
+import { useToast } from "@/hooks/use-toast"
 
 export default function BookingPage({ params }: { params: { theaterId: string } }) {
+  const { user, loading } = useAuth()
+  const { toast } = useToast()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const time = searchParams.get("time") || "7:30 PM"
   const date = searchParams.get("date") || "2024-03-20"
@@ -47,8 +53,36 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
       .padStart(4, "0")}`
   }
 
+  // Handle navigation to snacks step with auth check
+  const handleProceedToSnacks = () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to continue with your booking.",
+        variant: "destructive"
+      })
+      // Redirect to sign in with return URL
+      const currentUrl = window.location.pathname + window.location.search
+      router.push(`/auth/sign-in?redirect=${encodeURIComponent(currentUrl)}`)
+      return
+    }
+    setStep(2)
+  }
+
   // Handle booking confirmation
   const handleConfirmBooking = async () => {
+    // Check authentication before confirming booking
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to confirm your booking.",
+        variant: "destructive"
+      })
+      const currentUrl = window.location.pathname + window.location.search
+      router.push(`/auth/sign-in?redirect=${encodeURIComponent(currentUrl)}`)
+      return
+    }
+
     // Generate booking reference if not already set
     const reference = bookingReference || generateBookingReference()
     setBookingReference(reference)
@@ -202,7 +236,7 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
 
                 <SeatSelection ticketCount={Number.parseInt(ticketCount)} onSeatSelect={setSelectedSeats} />
 
-                <Button className="w-full mt-8" size="lg" onClick={() => setStep(2)}>
+                <Button className="w-full mt-8" size="lg" onClick={handleProceedToSnacks}>
                   Continue to Snacks
                 </Button>
               </div>
@@ -210,6 +244,23 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
 
             {step === 2 && (
               <div>
+                {!user && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-center">
+                      <Info className="h-5 w-5 text-yellow-600 mr-2" />
+                      <div>
+                        <h4 className="text-sm font-medium text-yellow-800">Authentication Required</h4>
+                        <p className="text-sm text-yellow-700 mt-1">
+                          Please{" "}
+                          <Link href="/auth/sign-in" className="underline hover:text-yellow-800">
+                            sign in
+                          </Link>{" "}
+                          to continue with your booking.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <h2 className="text-2xl font-bold mb-6">Add Snacks & Drinks</h2>
 
                 <SnacksSelection onSnacksChange={setSnacksTotal} />
@@ -258,8 +309,8 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
                   <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>
                     Back
                   </Button>
-                  <Button className="flex-1" onClick={handleConfirmBooking}>
-                    Confirm Booking
+                  <Button className="flex-1" onClick={handleConfirmBooking} disabled={!user}>
+                    {!user ? "Sign In Required" : "Confirm Booking"}
                   </Button>
                 </div>
               </div>
