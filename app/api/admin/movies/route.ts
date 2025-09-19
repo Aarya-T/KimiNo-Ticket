@@ -1,14 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
-import { AuthService } from '@/lib/auth'
+import { cookies } from 'next/headers'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 
 // GET - Fetch all movies (admin only)
 export async function GET(request: NextRequest) {
   try {
-    // Check if user is admin
-    const isAdmin = await AuthService.isAdmin()
-    if (!isAdmin) {
+    const supabase = createRouteHandlerClient({ cookies })
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || profile?.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const { data: movies, error } = await supabase
@@ -29,10 +40,21 @@ export async function GET(request: NextRequest) {
 // POST - Create new movie (admin only)
 export async function POST(request: NextRequest) {
   try {
-    // Check if user is admin
-    const isAdmin = await AuthService.isAdmin()
-    if (!isAdmin) {
+    const supabase = createRouteHandlerClient({ cookies })
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || profile?.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const body = await request.json()
@@ -55,6 +77,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
     }
 
+    const parsedDuration = duration !== undefined && duration !== null && `${duration}`.trim() !== ''
+      ? Number.parseInt(`${duration}`, 10)
+      : null
+    const parsedRating = rating !== undefined && rating !== null && `${rating}`.trim() !== ''
+      ? Number.parseFloat(`${rating}`)
+      : null
+
     const { data: movie, error } = await supabase
       .from('movies')
       .insert({
@@ -63,12 +92,12 @@ export async function POST(request: NextRequest) {
         image_url,
         backdrop_url,
         trailer_url,
-        duration: duration ? parseInt(duration) : null,
-        rating: rating ? parseFloat(rating) : null,
+        duration: parsedDuration,
+        rating: parsedRating,
         release_date,
         director,
-        cast: Array.isArray(cast) ? cast : [],
-        genres: Array.isArray(genres) ? genres : [],
+        cast: Array.isArray(cast) ? cast : (cast ? [String(cast)] : []),
+        genres: Array.isArray(genres) ? genres : (genres ? [String(genres)] : []),
         is_active: true
       })
       .select()

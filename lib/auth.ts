@@ -112,6 +112,12 @@ export class AuthService {
 
   static async getCurrentUser() {
     try {
+      // Avoid calling getUser when there is no session (prevents AuthSessionMissingError)
+      const { data: sessionData } = await supabase.auth.getSession()
+      if (!sessionData?.session) {
+        return { user: null, profile: null, error: null }
+      }
+
       const { data: { user }, error } = await supabase.auth.getUser()
       if (error) throw error
 
@@ -187,6 +193,14 @@ export class AuthService {
 
       return { user: null, profile: null, error: null }
     } catch (error: any) {
+      const message = String(error?.message || '')
+      if (message.includes('User from sub claim in JWT does not exist')) {
+        try {
+          await supabase.auth.signOut()
+        } catch {}
+        // Return logged-out state without surfacing an error to avoid UI loops
+        return { user: null, profile: null, error: null }
+      }
       console.error('Error in getCurrentUser:', error)
       return { user: null, profile: null, error }
     }

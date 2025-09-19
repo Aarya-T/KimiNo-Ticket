@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { useSearchParams } from "next/navigation"
 import { ChevronLeft, Info, Users } from "lucide-react"
 import Link from "next/link"
@@ -14,10 +14,11 @@ import { notFound } from "next/navigation"
 import { useAuth } from "@/lib/auth"
 import { useToast } from "@/hooks/use-toast"
 
-export default function BookingPage({ params }: { params: { theaterId: string } }) {
+export default function BookingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
+  const { theaterId } = useParams() as { theaterId: string }
   const searchParams = useSearchParams()
   const time = searchParams.get("time") || "7:30 PM"
   const date = searchParams.get("date") || "2024-03-20"
@@ -41,7 +42,7 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
 
   // Mock theater data
   const theater = {
-    id: params.theaterId,
+    id: theaterId,
     name: "PVR Cinemas",
     location: "Phoenix Mall",
   }
@@ -55,7 +56,7 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
 
   // Handle navigation to snacks step with auth check
   const handleProceedToSnacks = () => {
-    if (!user) {
+    if (!loading && !user) {
       toast({
         title: "Authentication Required",
         description: "Please sign in to continue with your booking.",
@@ -244,7 +245,7 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
 
             {step === 2 && (
               <div>
-                {!user && (
+                {!loading && !user && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                     <div className="flex items-center">
                       <Info className="h-5 w-5 text-yellow-600 mr-2" />
@@ -309,8 +310,8 @@ export default function BookingPage({ params }: { params: { theaterId: string } 
                   <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>
                     Back
                   </Button>
-                  <Button className="flex-1" onClick={handleConfirmBooking} disabled={!user}>
-                    {!user ? "Sign In Required" : "Confirm Booking"}
+                  <Button className="flex-1" onClick={handleConfirmBooking} disabled={loading || !user}>
+                    {!loading && !user ? "Sign In Required" : "Confirm Booking"}
                   </Button>
                 </div>
               </div>
