@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
@@ -74,17 +74,18 @@ export default function SnacksSelection({ onSnacksChange }: SnacksSelectionProps
         [id]: newCount,
       }
 
-      // Calculate total and notify parent
-      const total = Object.entries(updatedSnacks).reduce((sum, [id, count]) => {
-        const snack = snackItems.find((s) => s.id === Number(id))
-        return sum + (snack?.price || 0) * count
-      }, 0)
-
-      onSnacksChange(total)
-
       return updatedSnacks
     })
   }
+
+  // Notify parent after render commit to avoid updating parent during child render
+  useEffect(() => {
+    const total = Object.entries(snacks).reduce((sum, [id, count]) => {
+      const snack = snackItems.find((s) => s.id === Number(id))
+      return sum + (snack?.price || 0) * count
+    }, 0)
+    onSnacksChange(total)
+  }, [snacks, onSnacksChange])
 
   return (
     <div className="space-y-4">

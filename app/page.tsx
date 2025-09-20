@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import FeaturedMovies from "@/components/featured-movies"
+import LatestMovies from "@/components/latest-movies"
 import ComingSoon from "@/components/coming-soon"
 
 export default function Home() {
@@ -27,6 +28,19 @@ export default function Home() {
               Watch Trailer
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Recently Added */}
+      <section className="py-12 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold">Recently Added</h2>
+            <Link href="/movies" className="text-primary hover:underline">
+              View All
+            </Link>
+          </div>
+          <LatestMovies />
         </div>
       </section>
 

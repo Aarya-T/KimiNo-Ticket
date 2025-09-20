@@ -66,6 +66,11 @@ export default function Navbar() {
         
         <nav className="flex items-center space-x-4">
           <ThemeToggle />
+          {!loading && user && isAdmin && (
+            <Button variant="outline" asChild>
+              <Link href="/admin">Manage Movies</Link>
+            </Button>
+          )}
           {loading ? (
             <div className="h-8 w-8 animate-pulse bg-muted rounded-full" />
           ) : user ? (
