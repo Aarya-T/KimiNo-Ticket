@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { AuthService } from '@/lib/auth'
 
-// GET - Fetch single movie (admin only)
+// GET - Fetch single movie
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check if user is admin
-    const isAdmin = await AuthService.isAdmin()
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const { data: movie, error } = await supabase
       .from('movies')
       .select('*')
@@ -34,18 +27,12 @@ export async function GET(
   }
 }
 
-// PUT - Update movie (admin only)
+// PUT - Update movie
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check if user is admin
-    const isAdmin = await AuthService.isAdmin()
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const body = await request.json()
     const {
       title,
@@ -102,18 +89,12 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete movie (admin only)
+// DELETE - Delete movie
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check if user is admin
-    const isAdmin = await AuthService.isAdmin()
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     // Soft delete by setting is_active to false
     const { data: movie, error } = await supabase
       .from('movies')

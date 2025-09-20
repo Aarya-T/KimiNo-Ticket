@@ -310,8 +310,8 @@ export default function BookingPage() {
                   <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>
                     Back
                   </Button>
-                  <Button className="flex-1" onClick={handleConfirmBooking} disabled={loading || !user}>
-                    {!loading && !user ? "Sign In Required" : "Confirm Booking"}
+                  <Button className="flex-1" onClick={handleConfirmBooking} disabled={!user}>
+                    {!user ? "Sign In Required" : "Confirm Booking"}
                   </Button>
                 </div>
               </div>

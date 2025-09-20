@@ -90,6 +90,7 @@ export default function NewMoviePage() {
     if (!validateForm()) return
 
     setIsLoading(true)
+    setErrors({}) // Clear previous errors
 
     try {
       const response = await fetch('/api/admin/movies', {
@@ -104,9 +105,22 @@ export default function NewMoviePage() {
         })
       })
 
+      const responseData = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create movie')
+        // Handle field-specific errors
+        if (responseData.field) {
+          setErrors(prev => ({ ...prev, [responseData.field]: responseData.error }))
+          toast({
+            title: "Validation Error",
+            description: responseData.error,
+            variant: "destructive"
+          })
+        } else {
+          // Handle general errors
+          throw new Error(responseData.error || 'Failed to create movie')
+        }
+        return
       }
 
       toast({
@@ -116,9 +130,10 @@ export default function NewMoviePage() {
 
       router.push('/admin')
     } catch (error: any) {
+      console.error('Error creating movie:', error)
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || 'An unexpected error occurred',
         variant: "destructive"
       })
     } finally {
