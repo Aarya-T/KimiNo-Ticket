@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       genres: processedGenres,
       is_active: true
     }
-    
+    //hello
     console.log('Inserting movie data:', JSON.stringify(movieData, null, 2))
 
     const { data: movie, error } = await supabaseAdmin
