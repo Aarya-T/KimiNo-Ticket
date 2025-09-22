@@ -21,16 +21,16 @@ export async function sendBookingSMS({
 }) {
   try {
     // For development/testing, log the SMS instead of sending it
-    if (process.env.NODE_ENV === "development") {
-      console.log(`
-        To: +91${phone}
-        SMS: MovieTix Booking Confirmation}
-        Your booking for ${movieTitle} is confirmed!
-        Date & Time: ${date} at ${time}
-        Seats: ${seats.join(", ")}`)
+    // if (process.env.NODE_ENV === "development") {
+    //   console.log(`
+    //     To: +91${phone}
+    //     SMS: MovieTix Booking Confirmation}
+    //     Your booking for ${movieTitle} is confirmed!
+    //     Date & Time: ${date} at ${time}
+    //     Seats: ${seats.join(", ")}`)
 
-      return { success: true, message: "SMS would be sent in production" }
-    }
+    //   return { success: true, message: "SMS would be sent in production" }
+    // }
 
     // Initialize Twilio client with environment variables
     const accountSid = process.env.TWILIO_ACCOUNT_SID

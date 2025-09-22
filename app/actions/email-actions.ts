@@ -2,13 +2,14 @@
 
 import nodemailer from "nodemailer"
 
-// Configure email transporter
-// For production, you would use your actual SMTP credentials
-// Looking to send emails in production? Check out our Email API/SMTP product!
+// Configure email transporter using environment variables
 const transport = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: process.env.SMTP_SECURE === 'true', // Use 'true' for port 465, 'false' for others like 587
   auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
   },
 })
 
@@ -34,40 +35,22 @@ export async function sendBookingConfirmation({
   totalAmount: string
 }) {
   try {
-    // For development/testing, log the email instead of sending it
-    if (process.env.NODE_ENV === "development") {
-      console.log(`
-        To: ${email}
-        Subject: Your MovieTix Booking Confirmation - ${bookingReference}
+    // NOTE: This development check might prevent you from testing in dev.
+    // You can comment it out if you want to send real emails from your local machine.
+    // if (process.env.NODE_ENV === "development") {
+    //   console.log(`
+    //     To: ${email}
+    //     Subject: Your MovieTix Booking Confirmation - ${bookingReference}
         
-        Dear Customer,
-        
-        Thank you for booking with MovieTix! Your booking has been confirmed.
-        
-        Booking Details:
-        - Booking Reference: ${bookingReference}
-        - Movie: ${movieTitle}
-        - Theater: ${theaterName}
-        - Date & Time: ${date} at ${time}
-        - Seats: ${seats.join(", ")}
-        - Number of Tickets: ${ticketCount}
-        - Total Amount: ${totalAmount}
-        
-        Please arrive at least 15 minutes before the show time.
-        Present your booking reference at the counter to collect your tickets.
-        
-        We hope you enjoy the movie!
-        
-        Best regards,
-        The MovieTix Team
-      `)
+    //     [Email body would be shown here...]
+    //   `)
 
-      return { success: true, message: "Email would be sent in production" }
-    }
+    //   return { success: true, message: "Email would be sent in production" }
+    // }
 
-    // Send actual email in production
+    // Send actual email in production (and dev if the check above is removed)
     await transport.sendMail({
-      from: process.env.EMAIL_FROM || "bookings@movietix.com",
+      from: process.env.EMAIL_FROM, // Use the 'from' address from your .env file
       to: email,
       subject: `Your MovieTix Booking Confirmation - ${bookingReference}`,
       text: `
@@ -83,9 +66,6 @@ export async function sendBookingConfirmation({
         - Seats: ${seats.join(", ")}
         - Number of Tickets: ${ticketCount}
         - Total Amount: ${totalAmount}
-        
-        Please arrive at least 15 minutes before the show time.
-        Present your booking reference at the counter to collect your tickets.
         
         We hope you enjoy the movie!
         
