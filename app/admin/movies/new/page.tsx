@@ -22,7 +22,8 @@ interface MovieFormData {
   rating: string
   release_date: string
   director: string
-  cast: string[]
+  // CHANGED: From 'cast' to 'movie_cast' to match database
+  movie_cast: string[] 
   genres: string[]
 }
 
@@ -43,10 +44,12 @@ export default function NewMoviePage() {
     rating: "",
     release_date: "",
     director: "",
-    cast: [],
+    // CHANGED: From 'cast' to 'movie_cast'
+    movie_cast: [], 
     genres: []
   })
-  const [errors, setErrors] = useState<Partial<MovieFormData>>({})
+  // CHANGED: From 'cast' to 'movie_cast' in Partial type
+  const [errors, setErrors] = useState<Partial<MovieFormData>>({}) 
 
   useEffect(() => {
     if (!loading && !user) {
@@ -102,6 +105,7 @@ export default function NewMoviePage() {
           ...formData,
           duration: formData.duration ? parseInt(formData.duration) : null,
           rating: formData.rating ? parseFloat(formData.rating) : null,
+          // No direct change needed here as formData spread correctly handles it
         })
       })
 
@@ -110,7 +114,8 @@ export default function NewMoviePage() {
       if (!response.ok) {
         // Handle field-specific errors
         if (responseData.field) {
-          setErrors(prev => ({ ...prev, [responseData.field]: responseData.error }))
+          // This ensures if the API returns an error for 'movie_cast', it's mapped correctly
+          setErrors(prev => ({ ...prev, [responseData.field]: responseData.error })) 
           toast({
             title: "Validation Error",
             description: responseData.error,
@@ -148,10 +153,12 @@ export default function NewMoviePage() {
   }
 
   const addCastMember = () => {
-    if (castInput.trim() && !formData.cast.includes(castInput.trim())) {
+    // CHANGED: From 'cast' to 'movie_cast'
+    if (castInput.trim() && !formData.movie_cast.includes(castInput.trim())) { 
       setFormData(prev => ({
         ...prev,
-        cast: [...prev.cast, castInput.trim()]
+        // CHANGED: From 'cast' to 'movie_cast'
+        movie_cast: [...prev.movie_cast, castInput.trim()] 
       }))
       setCastInput("")
     }
@@ -160,7 +167,8 @@ export default function NewMoviePage() {
   const removeCastMember = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      cast: prev.cast.filter((_, i) => i !== index)
+      // CHANGED: From 'cast' to 'movie_cast'
+      movie_cast: prev.movie_cast.filter((_, i) => i !== index) 
     }))
   }
 
@@ -349,7 +357,8 @@ export default function NewMoviePage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Cast</CardTitle>
+                  {/* CHANGED: Label for consistency */}
+                  <CardTitle>Movie Cast</CardTitle> 
                   <CardDescription>
                     Add cast members to the movie
                   </CardDescription>
@@ -373,7 +382,8 @@ export default function NewMoviePage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {formData.cast.map((member, index) => (
+                    {/* CHANGED: From 'formData.cast.map' to 'formData.movie_cast.map' */}
+                    {formData.movie_cast.map((member, index) => ( 
                       <Badge
                         key={index}
                         variant="secondary"

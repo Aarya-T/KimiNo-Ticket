@@ -5,25 +5,29 @@ const upcomingMovies = [
   {
     id: 1,
     title: "Gladiator II",
-    image: "/placeholder.svg?height=450&width=300&text=Gladiator%20II",
+    image: "/gladiator2.png",
     releaseDate: "November 22, 2024",
     description: "The sequel to the Academy Award-winning film follows a new hero in ancient Rome.",
   },
   {
     id: 2,
     title: "Furiosa: A Mad Max Saga",
-    image: "/placeholder.svg?height=450&width=300&text=Furiosa",
+    image: "/Furiosa.jpg",
+    //https://image.tmdb.org/t/p/w500/iADOJ8Zymht2JPMoy3R7xceZprc.jpg
     releaseDate: "May 24, 2024",
     description: "The origin story of the renegade warrior from Mad Max: Fury Road.",
   },
   {
-    id: 3,
-    title: "Mission: Impossible 8",
-    image: "/placeholder.svg?height=450&width=300&text=Mission%20Impossible",
-    releaseDate: "May 23, 2025",
-    description: "Ethan Hunt returns for another impossible mission in this action-packed sequel.",
-  },
+  id: 3,
+  title: "Mission: Impossible 8",
+  image: "/MI8.jpg",
+  releaseDate: "May 23, 2025",
+  description: "Ethan Hunt returns for another impossible mission in this action-packed sequel.",
+},
+
 ]
+
+
 
 export default function ComingSoon() {
   return (

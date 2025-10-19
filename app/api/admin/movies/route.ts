@@ -43,8 +43,7 @@ export async function POST(request: NextRequest) {
       rating,
       release_date,
       director,
-      cast,
-      movie_cast, // Handle both field names
+      movie_cast, // Prioritize the correct field name
       genres
     } = body
 
@@ -94,16 +93,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Handle cast field (support both 'cast' and 'movie_cast')
-    const castArray = cast || movie_cast || []
+    // Handle movie_cast
+    const castArray = movie_cast || []
     const processedCast = Array.isArray(castArray) ? 
-      castArray.filter(member => member && member.trim() !== '') : 
-      (castArray ? [String(castArray).trim()].filter(Boolean) : [])
+      castArray.filter(member => member && String(member).trim() !== '') : 
+      []
 
     // Handle genres
     const processedGenres = Array.isArray(genres) ? 
-      genres.filter(genre => genre && genre.trim() !== '') : 
-      (genres ? [String(genres).trim()].filter(Boolean) : [])
+      genres.filter(genre => genre && String(genre).trim() !== '') : 
+      []
 
     const movieData = {
       title: title.trim(),
@@ -115,7 +114,7 @@ export async function POST(request: NextRequest) {
       rating: parsedRating,
       release_date: release_date || null,
       director: director?.trim() || null,
-      cast: processedCast, // This maps to the 'cast' column in database
+      movie_cast: processedCast, 
       genres: processedGenres,
       is_active: true
     }
