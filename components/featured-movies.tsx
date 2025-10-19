@@ -7,7 +7,7 @@ const featuredMovies = [
   {
     id: 1,
     title: "Dune: Part Two",
-    image: "/placeholder.svg?height=450&width=300&text=Dune",
+    image: "/DuneP2.jpg?height=450&width=300&text=Dune",
     rating: 4.8,
     genres: ["Sci-Fi", "Adventure"],
     duration: "166 min",
@@ -15,7 +15,7 @@ const featuredMovies = [
   {
     id: 2,
     title: "The Batman",
-    image: "/placeholder.svg?height=450&width=300&text=Batman",
+    image: "/batman.jpg?height=450&width=300&text=Batman",
     rating: 4.7,
     genres: ["Action", "Crime"],
     duration: "176 min",
@@ -23,7 +23,7 @@ const featuredMovies = [
   {
     id: 3,
     title: "Everything Everywhere All at Once",
-    image: "/placeholder.svg?height=450&width=300&text=Everything",
+    image: "/Everything.jpg?height=450&width=300&text=Everything",
     rating: 4.9,
     genres: ["Sci-Fi", "Comedy"],
     duration: "139 min",
@@ -31,7 +31,7 @@ const featuredMovies = [
   {
     id: 4,
     title: "Top Gun: Maverick",
-    image: "/placeholder.svg?height=450&width=300&text=Top%20Gun",
+    image: "/topgun.jpg?height=450&width=300&text=Top%20Gun",
     rating: 4.8,
     genres: ["Action", "Drama"],
     duration: "130 min",

@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
       rating: parsedRating,
       release_date: release_date || null,
       director: director?.trim() || null,
-      // THIS IS THE FIX: Changed 'cast' to 'movie_cast' to match your database column
       movie_cast: processedCast, 
       genres: processedGenres,
       is_active: true

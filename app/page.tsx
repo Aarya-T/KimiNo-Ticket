@@ -4,6 +4,7 @@ import FeaturedMovies from "@/components/featured-movies"
 import LatestMovies from "@/components/latest-movies"
 import ComingSoon from "@/components/coming-soon"
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
@@ -11,7 +12,7 @@ export default function Home() {
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 z-10" />
         <img
-          src="/placeholder.svg?height=1080&width=1920"
+          src="/Oppen.jpg?height=1080&width=1920"
           alt="Featured movie"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -24,9 +25,13 @@ export default function Home() {
             <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link href="/booking/1?time=7:30 PM&date=2024-03-20&movieId=1&movieTitle=Oppenheimer">Book Tickets</Link>
             </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              Watch Trailer
-            </Button>
+            
+
+              <Button asChild>
+                <Link href="https://www.youtube.com/watch?v=bK6ldnjE3Y0" target="_blank">
+                  Watch Trailer
+                </Link>
+              </Button>
           </div>
         </div>
       </section>

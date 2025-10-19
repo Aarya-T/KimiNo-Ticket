@@ -140,7 +140,7 @@ export default function BookingPage() {
   const movie = {
     id: movieId || "1",
     title: movieTitle || "Dune: Part Two",
-    image: `/placeholder.svg?height=300&width=200&text=${encodeURIComponent(movieTitle || "Dune Part Two")}`,
+    image: `/DuneP2.jpg?height=300&width=200&text=${encodeURIComponent(movieTitle || "Dune Part Two")}`,
     rating: "UA",
     duration: "166 min",
   }

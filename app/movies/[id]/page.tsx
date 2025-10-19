@@ -10,8 +10,8 @@ export default function MovieDetailsPage({ params }: { params: { id: string } })
   const movie = {
     id: params.id,
     title: "Dune: Part Two",
-    image: "/placeholder.svg?height=600&width=400&text=Dune%20Part%20Two",
-    backdrop: "/placeholder.svg?height=1080&width=1920&text=Dune%20Part%20Two%20Backdrop",
+    image: "/DuneP2.jpg?height=400&width=300&text=Dune%20Part%20Two%20Poster",
+    backdrop: "/DuneP2.jpg?height=1080&width=1920&text=Dune%20Part%20Two%20Backdrop",
     rating: 4.8,
     releaseDate: "March 1, 2024",
     duration: "166 min",
@@ -20,7 +20,7 @@ export default function MovieDetailsPage({ params }: { params: { id: string } })
     cast: ["Timothée Chalamet", "Zendaya", "Rebecca Ferguson", "Josh Brolin"],
     description:
       "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he must prevent a terrible future only he can foresee.",
-    trailer: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    trailer: "https://youtu.be/Way9Dexny3w?si=2wbI47fwz6_7ZOUS",
   }
 
   return (
@@ -69,8 +69,10 @@ export default function MovieDetailsPage({ params }: { params: { id: string } })
                     Book Tickets
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                  <Film className="mr-2 h-4 w-4" /> Watch Trailer
+                <Button asChild>
+                  <Link href="https://youtu.be/Way9Dexny3w?si=2wbI47fwz6_7ZOUS" target="_blank">
+                    Watch Trailer
+                  </Link>
                 </Button>
               </div>
             </div>
